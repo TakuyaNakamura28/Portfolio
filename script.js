@@ -12,6 +12,10 @@ const menuToggle = document.querySelector('.menu-toggle');
 const navRight = document.querySelector('.nav-right');
 const parallaxElements = document.querySelectorAll('[data-scroll-speed]');
 
+// GSAP用の配列変換
+const workItemsGsap = gsap.utils.toArray('.work-item');
+const skillCategoriesGsap = gsap.utils.toArray('.skill-category');
+
 // カーソル関連の変数
 let mouseX = 0;
 let mouseY = 0;
@@ -77,7 +81,7 @@ splitTypes.forEach((char, i) => {
 });
 
 // 作品一覧のスクロールアニメーション
-workItems.forEach((item) => {
+workItemsGsap.forEach((item) => {
     gsap.from(item, {
         scrollTrigger: {
             trigger: item,
@@ -91,7 +95,7 @@ workItems.forEach((item) => {
 });
 
 // スキルセクションのアニメーション
-skillCategories.forEach((category, index) => {
+skillCategoriesGsap.forEach((category, index) => {
     gsap.from(category, {
         scrollTrigger: {
             trigger: category,

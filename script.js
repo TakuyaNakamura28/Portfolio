@@ -2,8 +2,8 @@
 const cursor = document.querySelector('.cursor');
 const links = document.querySelectorAll('a, button');
 const splitTypes = document.querySelectorAll('.line');
-const workItems = gsap.utils.toArray('.work-item');
-const skillCategories = gsap.utils.toArray('.skill-category');
+const workItems = document.querySelectorAll('.work-item');
+const skillCategories = document.querySelectorAll('.skill-category');
 const scrollElements = document.querySelectorAll('.js-scroll');
 const filterButtons = document.querySelectorAll('.filter-button');
 const navLinks = document.querySelectorAll('.nav-link, .logo');

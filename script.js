@@ -189,6 +189,7 @@ navLinks.forEach(link => {
 });
 
 // プロジェクトフィルター
+const workItemsArray = Array.from(workItems);
 filterButtons.forEach(button => {
     button.addEventListener('click', () => {
         const filter = button.dataset.filter;
@@ -198,7 +199,7 @@ filterButtons.forEach(button => {
         button.classList.add('active');
         
         // プロジェクトのフィルタリング
-        workItems.forEach(item => {
+        workItemsArray.forEach(item => {
             if (filter === 'all' || item.dataset.category === filter) {
                 gsap.to(item, {
                     opacity: 1,

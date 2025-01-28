@@ -1,10 +1,18 @@
-// カスタムカーソル
+// DOM要素の取得
 const cursor = document.querySelector('.cursor');
+const links = document.querySelectorAll('a, button');
+const splitTypes = document.querySelectorAll('.line');
+const workItems = gsap.utils.toArray('.work-item');
+const skillCategories = gsap.utils.toArray('.skill-category');
+const scrollElements = document.querySelectorAll('.js-scroll');
+
+// カーソル関連の変数
 let mouseX = 0;
 let mouseY = 0;
 let cursorX = 0;
 let cursorY = 0;
 
+// カスタムカーソルのアニメーション
 gsap.to({}, 0.016, {
     repeat: -1,
     onRepeat: function() {
@@ -17,15 +25,14 @@ gsap.to({}, 0.016, {
     }
 });
 
+// マウス移動時のカーソル更新
 document.addEventListener('mousemove', (e) => {
     mouseX = e.clientX;
     mouseY = e.clientY;
     cursor.style.transform = `translate(${e.clientX - 10}px, ${e.clientY - 10}px)`;
 });
 
-// Enhanced cursor interactions
-const links = document.querySelectorAll('a, button');
-
+// リンクホバー時のカーソル効果
 links.forEach(link => {
     link.addEventListener('mouseenter', () => cursor.classList.add('hover'));
     link.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
@@ -45,13 +52,11 @@ const scroll = new LocomotiveScroll({
     }
 });
 
-// GSAPアニメーション
+// GSAPアニメーション設定
 gsap.registerPlugin(ScrollTrigger);
 
-// ヒーローセクションのアニメーション
-const splitTypes = document.querySelectorAll('.line');
+// ヒーローセクションのテキストアニメーション
 const tl = gsap.timeline();
-
 splitTypes.forEach((char, i) => {
     const text = new SplitType(char, { types: 'chars' });
     tl.from(text.chars, {
@@ -64,8 +69,7 @@ splitTypes.forEach((char, i) => {
     }, i * 0.1);
 });
 
-// スクロールアニメーション
-const workItems = gsap.utils.toArray('.work-item');
+// 作品一覧のスクロールアニメーション
 workItems.forEach((item) => {
     gsap.from(item, {
         scrollTrigger: {
@@ -79,8 +83,7 @@ workItems.forEach((item) => {
     });
 });
 
-// スキルカテゴリーのアニメーション
-const skillCategories = gsap.utils.toArray('.skill-category');
+// スキルセクションのアニメーション
 skillCategories.forEach((category, index) => {
     gsap.from(category, {
         scrollTrigger: {
@@ -95,20 +98,58 @@ skillCategories.forEach((category, index) => {
     });
 });
 
-// スキルカルーセルのアニメーション
-const carouselTrack = document.querySelector('.carousel-track');
-if (carouselTrack) {
-    gsap.to(carouselTrack, {
-        x: '-50%',
-        ease: 'none',
-        scrollTrigger: {
-            trigger: '.skills-carousel',
-            start: 'top center',
-            end: 'bottom center',
-            scrub: 1
+// スクロールアニメーションのユーティリティ関数
+const elementInView = (el, offset = 0) => {
+    const elementTop = el.getBoundingClientRect().top;
+    return (
+        elementTop <= (window.innerHeight || document.documentElement.clientHeight) * (1 - offset)
+    );
+};
+
+const displayScrollElement = (element) => {
+    element.classList.add('scrolled');
+};
+
+const hideScrollElement = (element) => {
+    element.classList.remove('scrolled');
+};
+
+// スクロールアニメーションの処理
+const handleScrollAnimation = () => {
+    scrollElements.forEach((el) => {
+        if (elementInView(el, 0.25)) {
+            displayScrollElement(el);
         }
     });
-}
+};
+
+// スクロールイベントの設定
+window.addEventListener('scroll', () => {
+    handleScrollAnimation();
+});
+
+// 初期表示時のアニメーション実行
+handleScrollAnimation();
+
+// Locomotive ScrollとScrollTriggerの連携
+ScrollTrigger.scrollerProxy('[data-scroll-container]', {
+    scrollTop(value) {
+        return arguments.length ? scroll.scrollTo(value, 0, 0) : scroll.scroll.instance.scroll.y;
+    },
+    getBoundingClientRect() {
+        return {
+            top: 0,
+            left: 0,
+            width: window.innerWidth,
+            height: window.innerHeight
+        };
+    },
+    pinType: document.querySelector('[data-scroll-container]').style.transform ? 'transform' : 'fixed'
+});
+
+// ScrollTriggerの更新
+ScrollTrigger.addEventListener('refresh', () => scroll.update());
+ScrollTrigger.refresh();
 
 // Navbar scroll effect
 const nav = document.querySelector('.nav');
@@ -125,40 +166,6 @@ window.addEventListener('scroll', () => {
     
     lastScroll = currentScroll;
 });
-
-// Scroll animations
-const scrollElements = document.querySelectorAll('[data-scroll]');
-
-const elementInView = (el, offset = 0) => {
-    const elementTop = el.getBoundingClientRect().top;
-    return (
-        elementTop <= 
-        (window.innerHeight || document.documentElement.clientHeight) * (1 - offset)
-    );
-};
-
-const displayScrollElement = (element) => {
-    element.classList.add('is-visible');
-};
-
-const hideScrollElement = (element) => {
-    element.classList.remove('is-visible');
-};
-
-const handleScrollAnimation = () => {
-    scrollElements.forEach((el) => {
-        if (elementInView(el, 0.25)) {
-            displayScrollElement(el);
-        }
-    });
-};
-
-window.addEventListener('scroll', () => {
-    handleScrollAnimation();
-});
-
-// Initialize scroll animations
-handleScrollAnimation();
 
 // ナビゲーションリンクのホバーエフェクト
 const navLinks = document.querySelectorAll('.nav-link, .logo');
@@ -180,7 +187,7 @@ navLinks.forEach(link => {
 
 // プロジェクトフィルター
 const filterButtons = document.querySelectorAll('.filter-button');
-const workItems = document.querySelectorAll('.work-item');
+const projectItems = document.querySelectorAll('.work-item');
 
 filterButtons.forEach(button => {
     button.addEventListener('click', () => {
@@ -191,7 +198,7 @@ filterButtons.forEach(button => {
         button.classList.add('active');
         
         // プロジェクトのフィルタリング
-        workItems.forEach(item => {
+        projectItems.forEach(item => {
             if (filter === 'all' || item.dataset.category === filter) {
                 gsap.to(item, {
                     opacity: 1,
@@ -244,24 +251,3 @@ parallaxElements.forEach(element => {
         }
     });
 });
-
-// Locomotive ScrollとScrollTriggerの連携
-scroll.on('scroll', ScrollTrigger.update);
-
-ScrollTrigger.scrollerProxy('[data-scroll-container]', {
-    scrollTop(value) {
-        return arguments.length ? scroll.scrollTo(value, {duration: 0}) : scroll.scroll.instance.scroll.y;
-    },
-    getBoundingClientRect() {
-        return {
-            top: 0,
-            left: 0,
-            width: window.innerWidth,
-            height: window.innerHeight
-        };
-    },
-    pinType: document.querySelector('[data-scroll-container]').style.transform ? 'transform' : 'fixed'
-});
-
-ScrollTrigger.addEventListener('refresh', () => scroll.update());
-ScrollTrigger.refresh();

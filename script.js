@@ -5,6 +5,7 @@ const splitTypes = document.querySelectorAll('.line');
 const workItems = gsap.utils.toArray('.work-item');
 const skillCategories = gsap.utils.toArray('.skill-category');
 const scrollElements = document.querySelectorAll('.js-scroll');
+const filterButtons = document.querySelectorAll('.filter-button');
 
 // カーソル関連の変数
 let mouseX = 0;
@@ -186,9 +187,6 @@ navLinks.forEach(link => {
 });
 
 // プロジェクトフィルター
-const filterButtons = document.querySelectorAll('.filter-button');
-const projectItems = document.querySelectorAll('.work-item');
-
 filterButtons.forEach(button => {
     button.addEventListener('click', () => {
         const filter = button.dataset.filter;
@@ -198,19 +196,19 @@ filterButtons.forEach(button => {
         button.classList.add('active');
         
         // プロジェクトのフィルタリング
-        projectItems.forEach(item => {
+        workItems.forEach(item => {
             if (filter === 'all' || item.dataset.category === filter) {
                 gsap.to(item, {
                     opacity: 1,
-                    scale: 1,
                     duration: 0.5,
+                    y: 0,
                     ease: 'power2.out'
                 });
             } else {
                 gsap.to(item, {
                     opacity: 0.3,
-                    scale: 0.95,
                     duration: 0.5,
+                    y: 50,
                     ease: 'power2.out'
                 });
             }

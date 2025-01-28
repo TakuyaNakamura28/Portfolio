@@ -6,12 +6,18 @@ const workItems = gsap.utils.toArray('.work-item');
 const skillCategories = gsap.utils.toArray('.skill-category');
 const scrollElements = document.querySelectorAll('.js-scroll');
 const filterButtons = document.querySelectorAll('.filter-button');
+const navLinks = document.querySelectorAll('.nav-link, .logo');
+const nav = document.querySelector('.nav');
+const menuToggle = document.querySelector('.menu-toggle');
+const navRight = document.querySelector('.nav-right');
+const parallaxElements = document.querySelectorAll('[data-scroll-speed]');
 
 // カーソル関連の変数
 let mouseX = 0;
 let mouseY = 0;
 let cursorX = 0;
 let cursorY = 0;
+let lastScroll = 0;
 
 // カスタムカーソルのアニメーション
 gsap.to({}, 0.016, {
@@ -153,10 +159,7 @@ ScrollTrigger.addEventListener('refresh', () => scroll.update());
 ScrollTrigger.refresh();
 
 // Navbar scroll effect
-const nav = document.querySelector('.nav');
-let lastScroll = 0;
-
-window.addEventListener('scroll', () => {
+nav.addEventListener('scroll', () => {
     const currentScroll = window.pageYOffset;
     
     if (currentScroll > 50) {
@@ -169,7 +172,6 @@ window.addEventListener('scroll', () => {
 });
 
 // ナビゲーションリンクのホバーエフェクト
-const navLinks = document.querySelectorAll('.nav-link, .logo');
 navLinks.forEach(link => {
     link.addEventListener('mouseenter', () => {
         gsap.to(cursor, {
@@ -226,16 +228,12 @@ gsap.to('.scroll-indicator', {
 });
 
 // モバイルメニューの切り替え
-const menuToggle = document.querySelector('.menu-toggle');
-const navRight = document.querySelector('.nav-right');
-
 menuToggle.addEventListener('click', () => {
     menuToggle.classList.toggle('active');
     navRight.classList.toggle('active');
 });
 
 // パララックス効果
-const parallaxElements = document.querySelectorAll('[data-scroll-speed]');
 parallaxElements.forEach(element => {
     const speed = element.dataset.scrollSpeed;
     gsap.to(element, {
